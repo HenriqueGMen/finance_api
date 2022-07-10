@@ -107,4 +107,40 @@ app.get("/statement/date", verifyIfExistsAccountCPF ,(req, res) => {
     return res.json(statement);
 })
 
+app.put("/account", verifyIfExistsAccountCPF, (req, res) => {
+    const { name } = req.body;
+    const { customer } = req;
+
+    customer.name = name;
+
+    return res.status(200).send();
+})
+
+app.get("/account", verifyIfExistsAccountCPF,(req, res) => {
+    const { customer } = req;
+
+    return res.json(customer);
+})
+
+app.delete("/repositories/:id", (req, res) => {
+    const { id } = req.params;
+  
+    const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+  
+    if (repositoryIndex === -1) {
+      return res.status(404).json({ error: 'Repository Not Found' });
+    }
+  
+    repositories.splice(repositoryIndex, 1);
+  
+    return res.status(204).json();  
+});
+
+app.get('/balance', verifyIfCPFAccountExists, (req, res) => {
+   const { customer } = req;
+   const balance = getBalance(customer.statement)
+
+   return res.json(balance)
+})
+
 app.listen(3333)
